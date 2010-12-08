@@ -1,0 +1,94 @@
+<html>
+<head>
+<script src="jquery.js"></script>
+<script src="prototypes.js"></script>
+<script src="board.js"></script>
+<script src="jquery-ui.js"></script>
+
+<script>
+$(document).ready(function() {
+
+    $( "#drag-sheep" ).draggable({
+        stop: function(event, ui) {
+           $('#drag-sheep').css('opacity', '0');           
+           $('#drag-sheep').css('top', '254px');
+           $('#drag-sheep').css('left', '318px');
+           $('#drag-sheep').animate({opacity: 1}, 2000);
+        }
+    });
+		$( "td" ).droppable({drop: fn});
+
+		
+});
+
+var fn = function( event, ui ) {
+				
+		x = parseInt($(this).attr('x'));
+		y = parseInt($(this).attr('y'));
+		if(isValidMove(x,y)){
+$( this ).addClass( "item-2" );
+		    board[x][y] = SHEEP;
+		    drawBoard();
+		    numSheepsInBasket -= 1;
+		    setTimeout("moveTiger()", 10);
+		}
+}
+
+</script>
+
+<style>
+body{
+	--background:url("game-bg.png") no-repeat scroll 0px 0px black;
+}
+
+#board {
+	width: 310px;
+	float: left;
+}
+
+#dashboard {
+	width: 200px;
+	float: left;	
+}
+
+#drag-sheep{
+	background:url("sheep.png") no-repeat scroll center center transparent;
+	height:40px;
+	position:absolute;
+	top:254px;
+	width:40px;
+}
+
+table {
+	background:url("game-board.png") no-repeat scroll center center transparent;
+}
+
+td {
+	border: 1px solid #ccc;
+	height:56px;
+	text-align:center;
+	width:56px;
+	cursor:pointer;
+	text-indent:-9999px;
+}
+
+td.item-1 {
+	background: url("nought.png") no-repeat scroll center center transparent;
+}
+
+td.item-2 {
+	background: url("cross.png") no-repeat scroll center center transparent;
+}
+	
+</style>
+</head>
+<body>
+<div id="app-area">
+	<div id="board"></div>
+	<div id="dashboard">
+		<div id="drag-sheep"></div>
+	</div>
+</div>
+
+</body>
+</html>
