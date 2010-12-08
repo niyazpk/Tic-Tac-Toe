@@ -104,9 +104,10 @@ function playerWon(player){
 		board[row[1][0]][row[1][1]] === player && 
 		board[row[2][0]][row[2][1]] === player){
 			count++;
-			
+
 		}
 	}
+	//console.log(count);
 	return count;
 }
 
@@ -122,8 +123,8 @@ function isTerminal(){
 function evaluate(depth){
 	var value = 0;
 
-	value -= ifNoughtWon() * 1000;
-	value += ifCrossWon() * 1000;
+	value -= ifNoughtWon() * 100  + 1000 * depth;
+	value += ifCrossWon() * 100 + 1000 * depth;
 	
 	if(board[1][1] == NOUGHT){
 		value -= 10;
@@ -140,7 +141,9 @@ function alphabeta( depth, alpha, beta){
 		return evaluate(depth);
 	
 	var moves = generateMoves(depth);
-	
+	if(depth === DEPTH){
+		console.log(moves);
+	}
     for(var i = 0; i < moves.length; i++){
 		makeMove(depth, moves[i]);
 		v = -alphabeta( depth-1, -beta, -alpha);
@@ -157,11 +160,36 @@ function alphabeta( depth, alpha, beta){
     return alpha;
 }
 
+
+
+function minimax(depth){
+	if(isTerminal() || depth == 0)
+		return evaluate(depth);
+		
+	var a = -INFINITY;
+	var moves = generateMoves(depth);
+	
+	for(var i = 0; i < moves.length; i++){
+		makeMove(depth, moves[i]);
+		v = -minimax(depth-1);
+		
+		if(v > a){
+			a = v;
+			if(depth === DEPTH){
+				bestMove = moves[i];
+			}
+		}
+		unMakeMove(moves[i]);
+    }
+	return a;
+}
+
 function placeNought(){
 	bestMove = [];
     var alpha = -INFINITY;
     var beta = INFINITY;
     alphabeta(DEPTH, alpha, beta);
+	//minimax(DEPTH);
     makeMove(true, bestMove);
     drawBoard();
     if(ifNoughtWon()){
